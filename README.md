@@ -60,7 +60,7 @@ You can put any valid JavaScript expression inside the curly braces. For example
     );
 
 
-In this, we embed the result of calling the function formatName(user) into an <h1> element.
+In this, we embed the result of calling the function formatName(user) into an h1 element.
 We split JSX over multiple lines for readability and wrapping it in parentheses.
 
 
