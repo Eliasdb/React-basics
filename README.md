@@ -44,8 +44,8 @@ You can put any valid JavaScript expression inside the curly braces. For example
     }
 
     const user = {
-      firstName: 'Harper',
-      lastName: 'Perez'
+      firstName: 'Elias',
+      lastName: 'De Bock'
     };
 
     const element = (
@@ -243,18 +243,18 @@ Previously, we only encountered React elements that represent DOM tags:
 
 However, elements can also represent user-defined components:
 
-    const element = <Welcome name="Sara" />;
+    const element = <Welcome name="Elias" />;
 
 When React sees an element representing a user-defined component, it passes JSX attributes to this component as a single object. We call this object “props”.
 
 
-For example, this code renders “Hello, Sara” on the page:
+For example, this code renders “Hello, Elias” on the page:
 
     function Welcome(props) {
       return <h1>Hello, {props.name}</h1>;
     }
 
-    const element = <Welcome name="Sara" />;
+    const element = <Welcome name="Elias" />;
 
     ReactDOM.render(
       element,
@@ -285,9 +285,9 @@ We can create an App component that renders the Welcome component many times:
     function App() {
       return (
         <div>
-          <Welcome name="Sara" />
-          <Welcome name="Cahal" />
-          <Welcome name="Edite" />
+          <Welcome name="Elias" />
+          <Welcome name="Benna" />
+          <Welcome name="Brecht" />
         </div>
       );
     }
@@ -500,36 +500,36 @@ We will move the date from props to state in three steps:
 
 1. Replace **this.props.date** with **this.state.date** in the render() method:
 
-    class Clock extends React.Component {
-      render() {
-        return (
-          <div>
-            <h1>Hello, world!</h1>
-            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
-          </div>
-        );
-      }
-    }
+        class Clock extends React.Component {
+          render() {
+            return (
+              <div>
+                <h1>Hello, world!</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+              </div>
+            );
+          }
+        }
 
 
 2. Add a **class constructor** that assigns the initial this.state:
 
-    class Clock extends React.Component {
-      constructor(props) {
-        super(props);
-        this.state = {date: new Date()};
-        // Class components should always call the base constructor with props.
-      }
+        class Clock extends React.Component {
+          constructor(props) {
+            super(props);
+            this.state = {date: new Date()};
+            // Class components should always call the base constructor with props.
+          }
 
-      render() {
-        return (
-          <div>
-            <h1>Hello, world!</h1>
-            <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
-          </div>
-        );
-      }
-    }
+          render() {
+            return (
+              <div>
+                <h1>Hello, world!</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+              </div>
+            );
+          }
+        }
 
 
 3. Remove the date prop from the <Clock /> element:
