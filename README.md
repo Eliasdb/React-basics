@@ -263,10 +263,10 @@ For example, this code renders “Hello, Sara” on the page:
 
 What happens in this example:
 
-1. We call ReactDOM.render() with the <Welcome name="Sara" /> element.
+1. We call ReactDOM.render() with the Welcome name="Sara" element.
 2. React calls the Welcome component with {name: 'Sara'} as the props.
-3. Our Welcome component returns a <h1>Hello, Sara</h1> element as the result.
-4. React DOM efficiently updates the DOM to match <h1>Hello, Sara</h1>.
+3. Our Welcome component returns a Hello, Sara element as the result.
+4. React DOM efficiently updates the DOM to match Hello, Sara.
 
 *Side note*: Always start component names with a capital letter (otherwise it might think it's HTML and falls out of the scope)
 
