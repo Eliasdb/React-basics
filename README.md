@@ -4,10 +4,10 @@
 
 The smallest React example looks like this: 
 
-  ReactDOM.render(
-    <h1>Hello, world!</h1>,
-    document.getElementById('root')
-  );
+    ReactDOM.render(
+      <h1>Hello, world!</h1>,
+      document.getElementById('root')
+    );
 
 In this guide, we will examine the building blocks of React apps: elements and components. Once you master them, you can create complex apps from small reusable pieces.
 Basic JS knowledge is strongly adviced to master. If you're unsure about your skills: [this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript) will refresh your memory or at least give you an adequate overview of the basics.
