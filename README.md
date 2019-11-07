@@ -205,3 +205,226 @@ React DOM compares the element and its children to the previous one, and only up
 Even though we create an element describing the whole UI tree on every tick, only the text node whose contents has changed gets updated by React DOM.
 
 *Pro tip*: Thinking about how the UI should look at any given moment rather than how to change it over time eliminates a whole class of bugs.
+
+# 4. Components and Props
+
+This is the basics, you can find the detailed component API reference [here](https://reactjs.org/docs/react-component.html).
+
+Components let you split the UI into **independent reusable pieces**. They are like JavaScript functions. They accept inputs (called “props”) and return elements.
+
+
+## 4.1 Function and Class Components
+
+The simplest way to define a component is to write a JavaScript function:
+
+    // function component 
+    function Welcome(props) {
+      return <h1>Hello, {props.name}</h1>;
+    }
+
+This is a valid **function component**: it accepts a single “props” object argument with data and returns an element (it's literally a JS function).
+
+
+You can also use an ES6 **class** to define a component:
+
+    // class component
+    class Welcome extends React.Component {
+      render() {
+        return <h1>Hello, {this.props.name}</h1>;
+      }
+    }
+
+
+## 4.2 Rendering a Component
+
+Previously, we only encountered React elements that represent DOM tags:
+
+    const element = <div />;
+
+However, elements can also represent user-defined components:
+
+    const element = <Welcome name="Sara" />;
+
+When React sees an element representing a user-defined component, it passes JSX attributes to this component as a single object. We call this object “props”.
+
+
+For example, this code renders “Hello, Sara” on the page:
+
+    function Welcome(props) {
+      return <h1>Hello, {props.name}</h1>;
+    }
+
+    const element = <Welcome name="Sara" />;
+
+    ReactDOM.render(
+      element,
+      document.getElementById('root')
+    );
+
+What happens in this example:
+
+1. We call ReactDOM.render() with the <Welcome name="Sara" /> element.
+2. React calls the Welcome component with {name: 'Sara'} as the props.
+3. Our Welcome component returns a <h1>Hello, Sara</h1> element as the result.
+4. React DOM efficiently updates the DOM to match <h1>Hello, Sara</h1>.
+
+*Side note*: Always start component names with a capital letter (otherwise it might think it's HTML and falls out of the scope)
+
+
+## 4.3 Composing Components
+
+A button, a form, a dialog, a screen: in React, all those are components.
+
+We can create an App component that renders the Welcome component many times:
+
+    // this is a component which we render in the app component, be it with a different props value
+    function Welcome(props) {
+      return <h1>Hello, {props.name}</h1>;
+    }
+
+    function App() {
+      return (
+        <div>
+          <Welcome name="Sara" />
+          <Welcome name="Cahal" />
+          <Welcome name="Edite" />
+        </div>
+      );
+    }
+
+    ReactDOM.render(
+      <App />,
+      document.getElementById('root')
+    );
+
+
+## 4.4 Extracting Components
+
+Don’t be afraid to split components into smaller components.
+
+For example, look at this Comment component:
+
+    function Comment(props) {
+      return (
+        <div className="Comment">
+          <div className="UserInfo">
+
+            <img className="Avatar"
+              src={props.author.avatarUrl}
+              alt={props.author.name}
+            />
+
+            <div className="UserInfo-name">
+              {props.author.name}
+            </div>
+
+          </div>
+
+          <div className="Comment-text">
+            {props.text}
+          </div>
+
+          <div className="Comment-date">
+            {formatDate(props.date)}
+          </div>
+
+        </div>
+      );
+    }
+
+It accepts *author*, *text*, and *date* as **props**, and describes a comment social media.
+
+This component can be tricky to change because of all the nesting. Let’s extract a few components from it.
+
+First, we will extract Avatar:
+
+    function Avatar(props) {
+      return (
+        <img className="Avatar"
+          src={props.user.avatarUrl}
+          alt={props.user.name}
+        />
+
+      );
+    }
+
+Name props in function of the component itself, rather than the context.
+
+We can now simplify Comment a tiny bit:
+
+    function Comment(props) {
+      return (
+        <div className="Comment">
+          <div className="UserInfo">
+            <Avatar user={props.author} />
+            <div className="UserInfo-name">
+              {props.author.name}
+            </div>
+          </div>
+          <div className="Comment-text">
+            {props.text}
+          </div>
+          <div className="Comment-date">
+            {formatDate(props.date)}
+          </div>
+        </div>
+      );
+    }
+
+Next, we will extract a UserInfo component that renders an Avatar next to the user’s name:
+
+    function UserInfo(props) {
+      return (
+        <div className="UserInfo">
+          <Avatar user={props.user} />
+          <div className="UserInfo-name">
+            {props.user.name}
+          </div>
+        </div>
+      );
+    }
+
+This lets us simplify Comment even further:
+
+    function Comment(props) {
+      return (
+        <div className="Comment">
+          <UserInfo user={props.author} />
+          <div className="Comment-text">
+            {props.text}
+          </div>
+          <div className="Comment-date">
+            {formatDate(props.date)}
+          </div>
+        </div>
+      );
+    }
+
+
+Extracting components might seem like grunt work at first, but having a palette of reusable components pays off in larger apps. A good rule of thumb is that if a part of your UI is used several times (Button, Panel, Avatar), or is complex enough on its own (App, FeedStory, Comment), it is a good candidate to be a reusable component.
+
+
+## 4.5 Props are Read-Only
+
+If you declare a component, never modify its own props.
+
+
+    function sum(a, b) {
+      return a + b;
+    }
+
+
+Above is a pure function: it doesn't change their inputs, so it's always the same result for the same inputs.
+
+    function withdraw(account, amount) {
+      account.total -= amount;
+    }
+
+
+This is an impure function: it changes its own input.
+
+
+**Important strict rule**: All React components must act like pure functions with respect to their props.
+
+Application UIs are dynamic and change over time. This is where “state” comes in. State allows React components to change their output over time without violating this rule.
+
