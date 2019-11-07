@@ -741,3 +741,139 @@ Each Clock sets up its own timer and updates independently.
 
 In React apps, whether a component is stateful or stateless is considered an implementation detail of the component that may change over time. You can use stateless components inside stateful components, and vice versa.
 
+
+## 6. Handling Events
+
+Handling events with React elements is very similar to handling events on DOM elements. There are some syntactic differences:
+
+- React events are named using camelCase, rather than lowercase
+
+- You pass a function as the {event handler}, rather than a "string":
+
+    - HTML:
+
+            <button onclick="activateLasers()">
+                Activate Lasers
+            </button>
+
+    - React:
+
+            <button onClick={activateLasers}>
+              Activate Lasers
+            </button>
+
+- You must call preventDefault(preventing default behaviour when opening a new page) explicitly:
+
+   - HTML:
+   
+            <a href="#" onclick="console.log('The link was clicked.'); return false">
+              Click me
+            </a>
+
+    - React:
+    
+            function ActionLink() {
+              function handleClick(e) {
+                // 
+                e.preventDefault();
+                console.log('The link was clicked.');
+              }
+
+            return (
+                <a href="#" onClick={handleClick}>
+                  Click me
+                </a>
+              );
+            }
+
+Here, e is a synthetic event. React defines these synthetic events according to the W3C(WWW Consortium) spec, so you don’t need to worry about cross-browser compatibility. Check [this](https://reactjs.org/docs/events.html) to learn more.
+
+When you define a component using an ES6 class, a common pattern is for an event handler to be a method on the class. For example, this Toggle component renders a button that lets the user toggle between “ON” and “OFF” states:
+
+    class Toggle extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {isToggleOn: true};
+
+        // This binding is necessary to make `this` work in the callback
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      handleClick() {
+        this.setState(state => ({
+          isToggleOn: !state.isToggleOn
+        }));
+      }
+
+      render() {
+        return (
+          <button onClick={this.handleClick}>
+            // class methods are not bound by default
+            // binding it at in the constructor makes it so you can reference the method here, otherwise it's undefined
+            {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </button>
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <Toggle />,
+      document.getElementById('root')
+    );
+
+
+There are two ways around binding: 
+
+1. If you are using the experimental public class fields syntax, you can use class fields to correctly bind callbacks:
+
+        class LoggingButton extends React.Component {
+          // This syntax ensures `this` is bound within handleClick.
+          // Warning: this is *experimental* syntax.
+          handleClick = () => {
+            console.log('this is:', this);
+          }
+
+          render() {
+            return (
+              <button onClick={this.handleClick}>
+                Click me
+              </button>
+            );
+          }
+        }
+
+
+2. If you aren’t using class fields syntax, you can use an arrow function in the callback:
+
+        class LoggingButton extends React.Component {
+          handleClick() {
+            console.log('this is:', this);
+          }
+
+          render() {
+            // This syntax ensures `this` is bound within handleClick
+            return (
+              <button onClick={(e) => this.handleClick(e)}>
+                Click me
+              </button>
+            );
+          }
+        }
+
+The problem with this syntax is that a different callback is created each time the LoggingButton renders. In most cases, this is fine. However, if this callback is passed as a prop to lower components, those components might do an extra re-rendering. 
+
+**Important**: We generally recommend binding in the constructor or using the class fields syntax, to avoid this sort of performance problem.
+
+
+### 6.1 Passing Arguments to Event Handlers
+
+Inside a loop it is common to want to pass an extra parameter to an event handler. For example, if id is the row ID, either of the following would work:
+
+ -   <button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+     // arrow function
+
+ -  <button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+     // function.prototype.bind
+
+In both cases, the e argument representing the React event will be passed as a second argument after the ID. With an arrow function, we have to pass it explicitly, but with bind any further arguments are automatically forwarded.
+
