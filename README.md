@@ -15,7 +15,7 @@ Basic JS knowledge is strongly adviced to master. If you're unsure about your sk
 
 ## 2. Introducing JSX
 
-const element = <h1>Hello, world!</h1>;
+    const element = <h1>Hello, world!</h1>;
 
 This is called JSX, and it is a syntax extension to JavaScript. We recommend using it with React to describe what the UI should look like. 
 It comes with the full power of JS.
